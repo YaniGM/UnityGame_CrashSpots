@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro; // Esto nos permite hablar con los textos de la interfaz
 using System.Collections.Generic; // Permite el uso de listas
+using System.Collections; // Herramientas para la gestión de los tiempos en las acciones del juego
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     [Header("Estado del Juego")]
     public int puntosTotales = 0;
     public bool juegoTerminado = false;
+    public bool juegoIniciado = false;
 
     [Header("Interfaz (UI)")]
     public TextMeshProUGUI textoScore;
@@ -26,18 +28,31 @@ public class GameManager : MonoBehaviour
     public GameObject panelFinJuego;
     public TextMeshProUGUI textoResultado;
 
+    [Header("Audio")]
+    public AudioSource sfxReproductor;
+    public AudioSource musicaFondo;
+    public AudioClip sonidoManchaEliminada;
+    public float retrasoSonido = 0.80f;
+
+    // Retrasamos el pop up de cada mancha 0,05segundos
+    public AudioClip sonidoAparicionMancha;
+    public float retrasoAparicion = 0.15f;
+
+    public AudioClip sonidoVictoria;
+    public AudioClip sonidoDerrota;
+
     void Start()
     {
         // Al arrancar, ocultamos el panel final, repartimos manchas y actualizamos textos
         panelFinJuego.SetActive(false);
-        RepartirManchas();
+        StartCoroutine(RepartirManchas());
         ActualizarUI();
     }
 
     void Update()
     {
-        // Si el juego ha terminado salimos del juego
-        if (juegoTerminado) return;
+        // Si el juego ni ha terminado ni ha empezado no corre el tiempo
+        if (juegoTerminado || !juegoIniciado) return;
 
         // Cuenta atrás
         tiempoRestante -= Time.deltaTime;
@@ -55,14 +70,31 @@ public class GameManager : MonoBehaviour
     // Esta función la llamaremos luego desde las manchas cuando exploten
     public void SumarPunto()
     {
-        if (juegoTerminado) return;
+        if (juegoTerminado || !juegoIniciado) return;
         
         puntosTotales ++;
         ActualizarUI();
 
+        if (sfxReproductor != null && sonidoManchaEliminada != null)
+        {
+            sfxReproductor.PlayOneShot(sonidoManchaEliminada);
+        }
+
         if (puntosTotales >= puntosParaGanar)
         {
             FinDelJuego(true); // HAS GANADO
+        }
+    }
+
+    IEnumerator ReproducirConRetraso()
+    {
+        // Esperamos el tiempo que hayamos definido
+        yield return new WaitForSeconds(retrasoSonido);
+
+        // Pasado ese tiempo, reproducimos el sonido
+        if (sfxReproductor != null && sonidoManchaEliminada != null)
+        {
+            sfxReproductor.PlayOneShot(sonidoManchaEliminada);
         }
     }
 
@@ -78,21 +110,34 @@ public class GameManager : MonoBehaviour
         juegoTerminado = true;
         panelFinJuego.SetActive(true);
 
-        // Evaluamos si el jugador ha ganado o perdido
-        if (victoria)
+        if (musicaFondo != null)
+        {
+            musicaFondo.Stop();
+        }
+
+        if (victoria) // Evaluamos si el jugador ha ganado o perdido
         {
             textoResultado.text = "¡HAS GANADO!";
             textoResultado.color = Color.green; // Texto en verde
-        }
 
+            if (sfxReproductor != null && sonidoVictoria != null) // Si gana suena melodía victoria
+            {
+                sfxReproductor.PlayOneShot(sonidoVictoria);
+            }
+        }
         else
         {
             textoResultado.text = "¡HAS PERDIDO!";
             textoResultado.color = Color.red; // Texto en rojo
+
+            if (sfxReproductor != null && sonidoDerrota != null) // Si pierde suena melodía derrota
+            {
+                sfxReproductor.PlayOneShot(sonidoDerrota);
+            }
         }
     }
 
-    void RepartirManchas()
+    IEnumerator RepartirManchas()
     {
         // Calculamos el tamaño disponible de la pantalla restando un margen (50 píxeles) para que no toquen
         // los bordes
@@ -145,6 +190,22 @@ public class GameManager : MonoBehaviour
 
             // Guardamos esta coordenada en la Lista
             posicionesUsadas.Add(posicionCandidata);
+            
+            // Reproduce sonido en cada pop up de cada mancha
+            if (sfxReproductor != null && sonidoAparicionMancha != null)
+            {
+                sfxReproductor.PlayOneShot(sonidoAparicionMancha);
+            }
+
+            // Se hace una pausa de 0,05segundos entre cada pop up
+            yield return new WaitForSeconds(retrasoAparicion);
+        }
+
+        juegoIniciado = true;
+
+        if (musicaFondo != null)
+        {
+            musicaFondo.Play();
         }
     }
 }

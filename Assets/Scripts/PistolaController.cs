@@ -11,6 +11,10 @@ public class PistolaController : MonoBehaviour
     // Referencia visual a la imagen de tu láser
     public RectTransform rayoLaser;
 
+    [Header("Audio")]
+    public AudioSource reproductorSonido;
+    public AudioClip sonidoDisparo;
+
     // Variables para el parpadeo del láser
     private float temporizadorLaser = 0f;
     private float tiempoLaserVisible = 0.15f; // El láser durará 0.15 segundos en pantalla
@@ -56,6 +60,12 @@ public class PistolaController : MonoBehaviour
         // Estiramos la altura (Y) del láser a esa distancia exacta, sin cambiar su grosor (X) y le restamos
         // el exceso hasta el centro de la mirilla
         rayoLaser.sizeDelta = new Vector2(rayoLaser.sizeDelta.x, distanciaExacta - recorteLaser);
+
+        //Agregamos sonido al disparo láser
+        if (reproductorSonido != null && sonidoDisparo != null)
+        {
+            reproductorSonido.PlayOneShot(sonidoDisparo);
+        }
 
     }
 }
