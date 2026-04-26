@@ -28,6 +28,10 @@ public class GameManager : MonoBehaviour
     public GameObject panelFinJuego;
     public TextMeshProUGUI textoResultado;
 
+    [Header("Colores de Texto")]
+    public Color colorVictoria = Color.blue;
+    public Color colorDerrota = Color.red;
+
     [Header("Audio")]
     public AudioSource sfxReproductor;
     public AudioSource musicaFondo;
@@ -118,7 +122,7 @@ public class GameManager : MonoBehaviour
         if (victoria) // Evaluamos si el jugador ha ganado o perdido
         {
             textoResultado.text = "¡HAS GANADO!";
-            textoResultado.color = Color.green; // Texto en verde
+            textoResultado.color = colorVictoria; // Seleccionamos color del texto
 
             if (sfxReproductor != null && sonidoVictoria != null) // Si gana suena melodía victoria
             {
@@ -128,7 +132,7 @@ public class GameManager : MonoBehaviour
         else
         {
             textoResultado.text = "¡HAS PERDIDO!";
-            textoResultado.color = Color.red; // Texto en rojo
+            textoResultado.color = colorDerrota; // Seleccionamos color del texto
 
             if (sfxReproductor != null && sonidoDerrota != null) // Si pierde suena melodía derrota
             {
