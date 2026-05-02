@@ -14,10 +14,11 @@ body {
 
 ## Concepto
 <br>
+<div style="text-align: justify;">
 Juego 2D en primera persona. El jugador se encuentra frente a una pared llena de 
 manchas de suciedad. Debe usar una herramienta que dispara chorros de pintura 
 de colores para cubrir/limpiar las manchas antes de que acabe el tiempo.
-
+</div>
 <br>
 
 <br>
