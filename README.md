@@ -1,3 +1,9 @@
+<style>
+body {
+    text-align: justify;
+}
+</style>
+
 <div align="center">
 
 # *Crash Spots*
