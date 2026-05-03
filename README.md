@@ -17,4 +17,5 @@ de colores para cubrir/limpiar las manchas antes de que acabe el tiempo.
 
 <br>
 
-<img width="2560" height="1436" alt="Captura de pantalla_(255)" src="https://github.com/user-attachments/assets/303347d8-5bf5-4eb7-a382-7fb1a8c74e8b" />
+<img width="2515" height="1413" alt="CrashSpots_Unity" src="https://github.com/user-attachments/assets/619ebfc4-b0d4-43b4-877c-6c42bd30928b" />
+
